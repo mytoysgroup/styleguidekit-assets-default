@@ -35,6 +35,9 @@ gulp.task('clean:html', function (cb) {
 gulp.task('clean:js', function (cb) {
 	return plugins.del(['dist/js/*'],cb);
 });
+gulp.task('clean:images', function (cb) {
+	return plugins.del(['dist/images/*'],cb);
+});
 
 /* core tasks */
 gulp.task('build:bower', ['clean:bower'], function(){
@@ -46,7 +49,7 @@ gulp.task('build:bower', ['clean:bower'], function(){
 });
 
 gulp.task('build:css-general', function() {
-	return gulp.src(['src/css/prism-okaidia.css'])
+	return gulp.src(['src/css/prism-okaidia.css','src/css/typeahead.css'])
 		.pipe(gulp.dest('dist/css/patternlab'))
 		.pipe(plugins.rename({suffix: '.min'}))
 		.pipe(plugins.minifyCss())
@@ -71,7 +74,7 @@ gulp.task('build:css-custom', ['clean:css-custom'], function() {
 		.pipe(plugins.rename({suffix: '.min'}))
 		.pipe(plugins.minifyCss())
 		.pipe(gulp.dest('dist/css/custom'))
-		.pipe(gulp.dest('../../../source/styleguide/css'));
+		.pipe(gulp.dest('../../../public/styleguide/css'));
 });
 
 gulp.task('build:fonts', ['clean:fonts'], function() {
@@ -84,6 +87,17 @@ gulp.task('build:html', ['clean:html'], function() {
 	return gulp.src('src/html/*')
 		.pipe(gulp.dest('dist/html'))
 		.pipe(gulp.dest('../../../public'));
+});
+
+gulp.task('build:images', ['clean:images'], function() {
+	return gulp.src('src/images/*')
+			.pipe(plugins.imagemin({
+				progressive: true,
+				svgoPlugins: [{removeViewBox: false}],
+				use: [plugins.pngcrush()]
+			}))
+			.pipe(gulp.dest('dist/images'))
+			.pipe(gulp.dest('../../../public/styleguide/images'));
 });
 
 gulp.task('build:js-viewer', ['clean:js'], function() {
@@ -114,16 +128,17 @@ gulp.task('build:js-pattern', ['build:js-viewer'], function() {
 		.pipe(gulp.dest('../../../public/styleguide/js'));
 });
 
-gulp.task('default', ['build:bower', 'build:css-custom', 'build:css-patternlab', 'build:fonts', 'build:html', 'build:js-pattern'], function () {
-	
+gulp.task('default', ['build:bower', 'build:css-custom', 'build:css-patternlab', 'build:fonts', 'build:html', 'build:images', 'build:js-pattern'], function () {
+
 	if (args.watch !== undefined) {
 		gulp.watch(['src/bower_components/**/*'], ['build:bower']);
-		gulp.watch(['src/css/prism-okaidia.css'],['build:css-general']);
+		gulp.watch(['src/css/prism-okaidia.css','src/css/typeahead.css'],['build:css-general']);
 		gulp.watch(['src/sass/styleguide.scss'], ['build:css-patternlab']);
 		gulp.watch(['src/sass/styleguide-specific.scss'], ['build:css-custom']);
 		gulp.watch(['src/fonts/*'], ['build:fonts'])
 		gulp.watch(['src/html/*'], ['build:html']);
+		gulp.watch(['src/images/*'], ['build:images']);
 		gulp.watch(['src/js/*'], ['build:js-pattern']);
 	}
-	
+
 });
