@@ -17,7 +17,7 @@
 		}
 	],
 	"require": {
-		"pattern-lab/core": "0.*"
+		"mytoysgroup/patternlab-php-core": "0.*"
 	},
 	"extra": {
 		"patternlab": {
