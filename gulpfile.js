@@ -35,9 +35,9 @@ gulp.task('clean:html', function (cb) {
 gulp.task('clean:js', function (cb) {
 	return plugins.del(['dist/js/*'],cb);
 });
-gulp.task('clean:images', function (cb) {
-	return plugins.del(['dist/images/*'],cb);
-});
+//gulp.task('clean:images', function (cb) {
+//	return plugins.del(['dist/images/*'],cb);
+//});
 
 /* core tasks */
 gulp.task('build:bower', ['clean:bower'], function(){
@@ -89,16 +89,17 @@ gulp.task('build:html', ['clean:html'], function() {
 		.pipe(gulp.dest('../../../public'));
 });
 
-gulp.task('build:images', ['clean:images'], function() {
-	return gulp.src('src/images/*')
-			.pipe(plugins.imagemin({
-				progressive: true,
-				svgoPlugins: [{removeViewBox: false}],
-				use: [plugins.pngcrush()]
-			}))
-			.pipe(gulp.dest('dist/images'))
-			.pipe(gulp.dest('../../../public/styleguide/images'));
-});
+
+//gulp.task('build:images', ['clean:images'], function() {
+//	return gulp.src('src/images/*')
+//			.pipe(plugins.imagemin({
+//				progressive: true,
+//				svgoPlugins: [{removeViewBox: false}],
+//				use: [plugins.pngcrush()]
+//			}))
+//			.pipe(gulp.dest('dist/images'))
+//			.pipe(gulp.dest('../../../public/styleguide/images'));
+//});
 
 gulp.task('build:js-viewer', ['clean:js'], function() {
 	return gulp.src(['src/js/*.js','!src/js/annotations-pattern.js','!src/js/code-pattern.js','!src/js/info-panel.js']) 
@@ -128,7 +129,13 @@ gulp.task('build:js-pattern', ['build:js-viewer'], function() {
 		.pipe(gulp.dest('../../../public/styleguide/js'));
 });
 
-gulp.task('default', ['build:bower', 'build:css-custom', 'build:css-patternlab', 'build:fonts', 'build:html', 'build:images', 'build:js-pattern'], function () {
+//images aus composer.json gestrichen:
+// { "images/*": "styleguide/images/*" },
+// Tasks aus gulpfile auskommentiert und aus default gestrichen:
+// 'build:images',
+//unklar images-tasks da waren und rausgeflogen sind oder neu eingefuehrt wurden
+//TODO: falls hinzugekommen, dann bitte wieder aktivieren
+gulp.task('default', ['build:bower', 'build:css-custom', 'build:css-patternlab', 'build:fonts', 'build:html', 'build:js-pattern'], function () {
 
 	if (args.watch !== undefined) {
 		gulp.watch(['src/bower_components/**/*'], ['build:bower']);
@@ -137,7 +144,7 @@ gulp.task('default', ['build:bower', 'build:css-custom', 'build:css-patternlab',
 		gulp.watch(['src/sass/styleguide-specific.scss'], ['build:css-custom']);
 		gulp.watch(['src/fonts/*'], ['build:fonts'])
 		gulp.watch(['src/html/*'], ['build:html']);
-		gulp.watch(['src/images/*'], ['build:images']);
+		//gulp.watch(['src/images/*'], ['build:images']);
 		gulp.watch(['src/js/*'], ['build:js-pattern']);
 	}
 
